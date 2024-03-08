@@ -17,39 +17,22 @@ public class AACMappings {
   
   AACCategory current;
   AACCategory generic;
+  AssociativeArray<String, AACCategory> categories; //associates the imageLoc with the category
 
   /**
    * Creates a new mapping with categories as specified in filename
    */
   public AACMappings(String filename) {
     this.generic = new AACCategory("");
-    this.current= this.generic;
-    /*
-    try{
-      BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(filename));
-      String line = br.readLine();
-      while(line != null) {
-        int space = line.indexOf(" ");
-        if(line.charAt(0) == '>') {
-          this.current.addItem(line.substring(1, space), line.substring(space + 1));
-        }
-        else{
-          this.current = new AACCategory(line.substring(space + 1));
-          this.generic.addItem(line.substring(0, space), line.substring(space + 1));
-        }
-        line = br.readLine();
-      }
-      this.current = generic;
-    }
-    catch(Exception e){
-
-    }
-    */
+    this.current = this.generic;
+    this.categories = new AssociativeArray<String, AACCategory>();
+    
     File f = new File(/*~/csc207/labs/MP5/AACNestedHW/AACMappings.txt" */ filename);
     try{
       Scanner scan = new Scanner(f);
-      String line = scan.nextLine();
-      while(line != null) {
+
+      while(scan.hasNextLine()) {
+        String line = scan.nextLine();
         System.out.println(line);
         int space = line.indexOf(" ");
         if(line.charAt(0) == '>') {
@@ -57,15 +40,15 @@ public class AACMappings {
         }
         else{
           this.current = new AACCategory(line.substring(space + 1));
+          this.categories.set(line.substring(0, space), this.current);
           this.generic.addItem(line.substring(0, space), line.substring(space + 1));
         }
-        line = scan.nextLine();
       }
+
       this.current = generic;
-      System.out.println("test");
       scan.close();
     }
-    catch(FileNotFoundException e){
+    catch(Exception e){
       System.out.println(e.getMessage());
     }
 
@@ -94,9 +77,15 @@ public class AACMappings {
   }
 
   /**
-   * Given the image location selected, it determines the associated text with the image.
+   * Given the image location selected, it determines the associated text with the image. If the image provided is a category, it also updates the AAC's current category to be the category associated with that image
    */
   public String getText(String imageLoc) {
+    if(isCategory(imageLoc)) {
+      try{
+        this.current = this.categories.get(imageLoc);
+      }
+      catch(Exception e){}
+    }
     return this.current.getText(imageLoc);
   }
 
@@ -104,7 +93,7 @@ public class AACMappings {
    * Determines if the image represents a category or text to speak
    */
   public boolean isCategory(String imageLoc) {
-    return this.current.hasImage(imageLoc);
+    return this.generic.hasImage(imageLoc);
   }
 
   /**
@@ -119,6 +108,16 @@ public class AACMappings {
    */
   public void writeToFile(String filename) {
     //STUB
+  }
+
+  /**
+   * Sets the current category to the cateogry represented by the imgLoc cur
+   */
+  public void setCurrent(String cur) {
+    try{
+      this.current = this.categories.get(cur);
+    }
+    catch(Exception e){}
   }
 
 }
