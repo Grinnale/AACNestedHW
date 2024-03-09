@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.io.FileWriter;
 
 
 /**
@@ -107,17 +108,17 @@ public class AACMappings {
    * Writes the ACC mappings stored to a file.
    */
   public void writeToFile(String filename) {
-    //STUB
-  }
-
-  /**
-   * Sets the current category to the cateogry represented by the imgLoc cur
-   */
-  public void setCurrent(String cur) {
     try{
-      this.current = this.categories.get(cur);
+      File nFile = new File(filename);
+      nFile.createNewFile();
+      FileWriter fw = new FileWriter(nFile);
+
+      for(int i = 0; i < this.categories.size(); i++) {
+        String imgLoc = (String) this.categories.index(i).key();
+        fw.write(imgLoc + " " + this.generic.getText(imgLoc));
+        System.out.println(imgLoc + " " + this.generic.getText(imgLoc));
+      }
     }
     catch(Exception e){}
   }
-
 }
