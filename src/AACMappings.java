@@ -61,6 +61,12 @@ public class AACMappings {
    */
   public void add(String imageLoc, String text) {
     this.current.addItem(imageLoc, text);
+    if(this.getCurrentCategory().equals("")) {
+      try{
+        this.categories.set(imageLoc, new AACCategory(text));
+      }
+      catch(Exception e){}
+    }
   }
 
   /**
@@ -115,9 +121,16 @@ public class AACMappings {
 
       for(int i = 0; i < this.categories.size(); i++) {
         String imgLoc = (String) this.categories.index(i).key();
-        fw.write(imgLoc + " " + this.generic.getText(imgLoc));
-        System.out.println(imgLoc + " " + this.generic.getText(imgLoc));
+        fw.write(imgLoc + " " + this.generic.getText(imgLoc) + "\n");
+        
+        AACCategory temp = this.categories.get(imgLoc);
+        AssociativeArray<String, String> cur = temp.getAA();
+        for(int j = 0; j < cur.size(); j++) {
+          String imgLoc2 = (String) cur.index(j).key();
+          fw.write(">" + imgLoc2 + " " + cur.get(imgLoc2) + "\n");
+        }
       }
+      fw.close();
     }
     catch(Exception e){}
   }

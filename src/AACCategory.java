@@ -71,4 +71,11 @@ public class AACCategory {
   public boolean hasImage(String imageLoc) {
     return this.category.hasKey(imageLoc);
   }
+
+  /**
+   * Returns the associative array for this AACCategory
+   */
+  public AssociativeArray<String, String> getAA() {
+    return category;
+  }
 }
